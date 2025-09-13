@@ -27,25 +27,11 @@ const login = asyncWrapper(async (req, res) => {
 
 // Dashboard controller
 const showDashboard = asyncWrapper(async (req, res) => {
-  const authHeader = req.headers.authorization;
-
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    throw new CustomAPIError('No token provided', 401);
-  }
-
-  const token = authHeader.split(' ')[1];
-
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const luckNumber = Math.floor(Math.random() * 100);
-
-    res.status(200).json({
-      status: 'success',
-      message: `Hello ${decoded.username}, your lucky number is ${luckNumber}`,
-    });
-  } catch (err) {
-    throw new CustomAPIError('Not authorized user', 401);
-  }
+  const luckNumber = Math.floor(Math.random() * 100);
+  res.status(200).json({
+    status: 'success',
+    message: `Hello ${req.user.username}, your lucky number is ${luckNumber}`,
+  });
 });
 
 module.exports = {
